@@ -60,8 +60,6 @@ int ObExprWhitespaceTokenize::eval_tokenize(const ObExpr& expr, ObEvalCtx &ctx, 
 {
   int ret = OB_SUCCESS;
   ObDatum *text = NULL;
-  ObEvalCtx::TempAllocGuard tmp_alloc_g(ctx);
-  common::ObIAllocator &tmp_allocator = tmp_alloc_g.get_allocator();
   if (OB_FAIL(expr.args_[0]->eval(ctx, text))) {
     LOG_WARN("evaluate parameters failed", K(ret));
   } else if (text->is_null()) {
@@ -83,16 +81,44 @@ int ObExprWhitespaceTokenize::tokenize(ObString &output, const ObString &text, c
 {
   int ret = OB_SUCCESS;
 
-  int64_t tot_length = text.length() + 2;
-  char *buf = static_cast<char *>(allocator.alloc(tot_length));
+  const char *ptr = text.ptr();
+  const int64_t len = text.length();
+  // Upper bound: original length + 2 brackets
+  const int64_t cap = len + 2;
+  char *buf = static_cast<char *>(allocator.alloc(cap));
   if (OB_ISNULL(buf)) {
     ret = OB_ALLOCATE_MEMORY_FAILED;
-    LOG_ERROR("alloc memory failed", K(ret), K(tot_length));
+    LOG_ERROR("alloc memory failed", K(ret), K(cap));
   } else {
-    output.assign_buffer(buf, static_cast<int32_t>(tot_length));
-    output.write("[", 1);
-    output.write(text.ptr(), text.length());
-    output.write("]", 1);
+    output.assign_buffer(buf, static_cast<int32_t>(cap));
+    // write opening bracket
+    (void)output.write("[", 1);
+    bool first = true;
+    int64_t i = 0;
+    while (i < len) {
+      // skip leading spaces
+      while (i < len && (ptr[i] == ' ' || ptr[i] == '\t' || ptr[i] == '\n' || ptr[i] == '\r')) {
+        ++i;
+      }
+      if (i >= len) { break; }
+      // token start
+      int64_t start = i;
+      while (i < len && !(ptr[i] == ' ' || ptr[i] == '\t' || ptr[i] == '\n' || ptr[i] == '\r')) {
+        ++i;
+      }
+      const int64_t tok_len = i - start;
+      if (tok_len > 0) {
+        if (!first) {
+          (void)output.write(",", 1);
+        } else {
+          first = false;
+        }
+        (void)output.write(ptr + start, static_cast<int32_t>(tok_len));
+      }
+      // continue loop to skip consecutive whitespaces
+    }
+    // write closing bracket
+    (void)output.write("]", 1);
   }
   return ret;
 }
