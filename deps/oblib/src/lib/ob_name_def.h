@@ -1160,6 +1160,7 @@
 #define N_ARRAY_MAP                         "array_map"
 #define N_ARRAY_TO_STRING                   "array_to_string"
 #define N_STRING_TO_ARRAY                   "string_to_array"
+#define N_WHITESPACE_TOKENIZE               "whitespace_tokenize"
 #define N_ARRAY_APPEND                      "array_append"
 #define N_ELEMENT_AT                        "element_at"
 #define N_ARRAY_CARDINALITY                 "cardinality"
