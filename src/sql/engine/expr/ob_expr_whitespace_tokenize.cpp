@@ -181,6 +181,9 @@ int ObExprWhitespaceTokenize::cg_expr(ObExprCGCtx &expr_cg_ctx,
   UNUSED(expr_cg_ctx);
   UNUSED(raw_expr);
   rt_expr.eval_func_ = eval_whitespace_tokenize;
+  // make it serializable for runtime by setting default batch/vector funcs
+  rt_expr.eval_batch_func_ = expr_default_eval_batch_func;
+  rt_expr.eval_vector_func_ = expr_default_eval_vector_func;
   return OB_SUCCESS;
 }
 

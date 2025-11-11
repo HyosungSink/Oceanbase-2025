@@ -37,6 +37,7 @@
 #include "ob_expr_greatest.h"
 #include "ob_expr_host_ip.h"
 #include "ob_expr_trim.h"
+#include "ob_expr_whitespace_tokenize.h"
 #include "ob_expr_tokenize.h"
 #include "ob_expr_insert.h"
 #include "ob_expr_int2ip.h"
@@ -1452,6 +1453,7 @@ static ObExpr::EvalFunc g_expr_eval_functions[] = {
   ObExprVecVisible::generate_vec_visible,                             /* 875 */
   NULL, // ObExprArrayContains::eval_array_contains_int32_t           /* 876 */
   NULL, // ObExprMaxPt::eval_max_pt,                                  /* 877 */
+  ObExprWhitespaceTokenize::eval_whitespace_tokenize,                 /* 878 */
 };
 
 static ObExpr::EvalBatchFunc g_expr_eval_batch_functions[] = {
