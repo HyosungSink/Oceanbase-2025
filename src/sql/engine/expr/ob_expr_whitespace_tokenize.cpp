@@ -89,6 +89,19 @@ int ObExprWhitespaceTokenize::calc_result_typeN(ObExprResType &type,
   return ret;
 }
 
+int ObExprWhitespaceTokenize::calc_result_type1(ObExprResType &type,
+                                                ObExprResType &text,
+                                                common::ObExprTypeCtx &type_ctx) const
+{
+  int ret = OB_SUCCESS;
+  ObExprResType types[1];
+  types[0] = text; // reuse N-path to keep one codepath
+  if (OB_FAIL(calc_result_typeN(type, types, 1, type_ctx))) {
+    LOG_WARN("calc result type1 failed", K(ret));
+  }
+  return ret;
+}
+
 int ObExprWhitespaceTokenize::eval_whitespace_tokenize(const ObExpr &expr,
                                                        ObEvalCtx &ctx,
                                                        ObDatum &res)
@@ -173,4 +186,3 @@ int ObExprWhitespaceTokenize::cg_expr(ObExprCGCtx &expr_cg_ctx,
 
 } // namespace sql
 } // namespace oceanbase
-

@@ -32,6 +32,9 @@ public:
                         ObExprResType *types,
                         int64_t param_num,
                         common::ObExprTypeCtx &type_ctx) const override;
+  int calc_result_type1(ObExprResType &type,
+                        ObExprResType &text,
+                        common::ObExprTypeCtx &type_ctx) const override;
 
   static int eval_whitespace_tokenize(const ObExpr &expr,
                                       ObEvalCtx &ctx,
@@ -49,4 +52,3 @@ private:
 } // namespace oceanbase
 
 #endif // OCEANBASE_SQL_ENGINE_EXPR_OB_EXPR_WHITESPACE_TOKENIZE_H_
-
